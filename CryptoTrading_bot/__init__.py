@@ -65,10 +65,10 @@ def TimerPer5Minute():
 
 if __name__ == '__main__':
     send_msg = ''
-    tickers = pyupbit.get_tickers(fiat="KRW")
-    send_msg += '\n'.join(IQ.Filter(tickers))
+    #tickers = pyupbit.get_tickers(fiat="KRW")
+    #send_msg += '\n'.join(IQ.Filter(tickers))
     send_msg += '\n' + TimerPerMinute()
-    send_msg += TimerPer5Minute()
+    #send_msg += TimerPer5Minute()
 
     if send_msg != '':
         bot.sendMessage(chat_id=CONFIG.ID.LKJ, text=send_msg)
