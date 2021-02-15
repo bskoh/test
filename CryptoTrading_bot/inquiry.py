@@ -150,23 +150,32 @@ def get_premium():
 
     #김프, 역프 판별기
     if CB_price_to_won > UB_price_to_won:#역프
-        if abs(CB_UB_Premium - cfg.CB_UB_Premium_pre) > cfg.PRIMIUM_GAP:
+        if abs(CB_UB_Premium - cfg.CB_UB_Premium_pre) > cfg.PREMIUM_GAP:
             premium = '역프 : ' + str(CB_UB_Premium) +'%'
             price_gap = CB_price_to_won-UB_price_to_won
-            print('역프:',CB_UB_Premium,'%,','현재 BTC 금액은 coinbase기준:',CB_price_to_won,'원, upbit기준:',UB_price_to_won,'원, 차이는',CB_price_to_won-UB_price_to_won,'원')
+            #print('역프:',CB_UB_Premium,'%,','현재 BTC 금액은 coinbase기준:',CB_price_to_won,'원, upbit기준:',UB_price_to_won,'원, 차이는',CB_price_to_won-UB_price_to_won,'원')
         else:
-            premium = ''
-            price_gap = ''
+            cfg.Premium_calc += cfg.CB_UB_Premium_pre - CB_UB_Premium
+            print(cfg.Premium_calc)
+            if cfg.Premium_calc >= 0.3 or cfg.Premium_calc <= -0.3:
+                premium = '김프 : ' + str(UB_CB_Premium) + '%'
+                price_gap = UB_price_to_won - CB_price_to_won
+                cfg.Premium_calc = 0
+
     elif UB_price_to_won > CB_price_to_won:#김프
-        if abs(UB_CB_Premium - cfg.UB_CB_Premium_pre) > cfg.PRIMIUM_GAP:
+        if abs(UB_CB_Premium - cfg.UB_CB_Premium_pre) > cfg.PREMIUM_GAP:
             premium = '김프 : ' + str(UB_CB_Premium) +'%'
             price_gap = UB_price_to_won - CB_price_to_won
-            print('김프:',UB_CB_Premium,'%,','현재 BTC 금액은 coinbase기준:',CB_price_to_won,'원, upbit기준:',UB_price_to_won,'원, 차이는',UB_price_to_won-CB_price_to_won,'원')
+            #print('김프:',UB_CB_Premium,'%,','현재 BTC 금액은 coinbase기준:',CB_price_to_won,'원, upbit기준:',UB_price_to_won,'원, 차이는',UB_price_to_won-CB_price_to_won,'원')
         else:
-            premium = ''
-            price_gap = ''
+            cfg.Premium_calc += cfg.UB_CB_Premium_pre - UB_CB_Premium
+            if cfg.Premium_calc >= 0.3 or cfg.Premium_calc <= -0.3:
+                premium = '김프 : ' + str(UB_CB_Premium) + '%'
+                price_gap = UB_price_to_won - CB_price_to_won
+                cfg.Premium_calc = 0
 
     cfg.CB_UB_Premium_pre = CB_UB_Premium
     cfg.UB_CB_Premium_pre = UB_CB_Premium
+
 
     return premium, str(price_gap)
