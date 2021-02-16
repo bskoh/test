@@ -135,6 +135,10 @@ def GetDominance():
         return e
 
 def get_premium():
+    #print('start')
+    #start = time.time()
+    premium = ''        ##return 값 최초 초기화(조건에 안걸릴경우 대비)
+    price_gap = 0       ##return 값 최초 초기화(조건에 안걸릴경우 대비)
     #원달러 환율 구하기
     url = 'https://quotation-api-cdn.dunamu.com/v1/forex/recent?codes=FRX.KRWUSD'
     exchange = requests.get(url).json()
@@ -152,7 +156,12 @@ def get_premium():
     CB_UB_Premium = round(((CB_price_to_won / UB_price_to_won) - 1) * 100, 2)
     UB_CB_Premium = round(((UB_price_to_won / CB_price_to_won) - 1) * 100, 2)
 
+
     #김프, 역프 판별기
+    #####################
+    ### else 부분이 없어서 premium_calc이 0.01보다 작은경우 선언되지 않은 값을 return해서 에러남
+    ### get_dominance 상단에 premium 과 price_gap의 초기값을 선언해줘서 모든 조건에 해당 안될 시 초기값을 return 하게 함
+    #####################
     if CB_price_to_won > UB_price_to_won:#역프
         if abs(CB_UB_Premium - cfg.CB_UB_Premium_pre) > cfg.PREMIUM_GAP:
             premium = '역프 : ' + str(CB_UB_Premium) + '%'
@@ -165,6 +174,7 @@ def get_premium():
                 premium = '역프 : ' + str(CB_UB_Premium) + '%'
                 price_gap = UB_price_to_won - CB_price_to_won
                 cfg.Premium_calc = 0
+
     else:#김프
         if abs(UB_CB_Premium - cfg.UB_CB_Premium_pre) > cfg.PREMIUM_GAP:
             premium = '김프 : ' + str(UB_CB_Premium) + '%'
@@ -175,12 +185,17 @@ def get_premium():
             if abs(cfg.Premium_calc) >= 0.01:
                 print(cfg.Premium_calc)
                 premium = '김프 : ' + str(UB_CB_Premium) + '%'
-                price_gap = UB_price_to_won - CB_price_to_won
+                price_gap = CB_price_to_won - UB_price_to_won
                 cfg.Premium_calc = 0
 
 
+
+    #print('end')
+    #print(time.time()-start)
+
     cfg.CB_UB_Premium_pre = CB_UB_Premium
     cfg.UB_CB_Premium_pre = UB_CB_Premium
-
-
     return premium, str(price_gap)
+
+
+
