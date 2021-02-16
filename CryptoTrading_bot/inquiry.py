@@ -124,8 +124,12 @@ def GetDominance():
             cfg.Dominance_pre = float(Dominance)
             return Dominance
         else:
-            cfg.Dominance_pre = float(Dominance)
-            return ''
+            cfg.Dominance_calc += float(cfg.Dominance_pre) - float(Dominance)
+            if abs(cfg.Dominance_calc) >= 0.01:
+                print(cfg.Dominance_calc)
+                Dominance = 'Bitcoin 도미넌스 : ' + str(Dominance) + '%'
+                cfg.Dominance_calc = 0
+                return Dominance
 
     except (ConnectionError, Timeout, TooManyRedirects) as e:
         return e
@@ -151,28 +155,29 @@ def get_premium():
     #김프, 역프 판별기
     if CB_price_to_won > UB_price_to_won:#역프
         if abs(CB_UB_Premium - cfg.CB_UB_Premium_pre) > cfg.PREMIUM_GAP:
-            premium = '역프 : ' + str(CB_UB_Premium) +'%'
+            premium = '역프 : ' + str(CB_UB_Premium) + '%'
             price_gap = CB_price_to_won-UB_price_to_won
             print('역프:',CB_UB_Premium,'%,','현재 BTC 금액은 coinbase기준:',CB_price_to_won,'원, upbit기준:',UB_price_to_won,'원, 차이는',CB_price_to_won-UB_price_to_won,'원')
         else:
-            cfg.Premium_calc += CB_UB_Premium - cfg.CB_UB_Premium_pre
-            print(cfg.Premium_calc)
+            cfg.Premium_calc += cfg.CB_UB_Premium_pre - CB_UB_Premium
             if abs(cfg.Premium_calc) >= 0.01:
-                premium = '김프 : ' + str(CB_UB_Premium) + '%'
+                print(cfg.Premium_calc)
+                premium = '역프 : ' + str(CB_UB_Premium) + '%'
                 price_gap = UB_price_to_won - CB_price_to_won
                 cfg.Premium_calc = 0
-
-    elif UB_price_to_won > CB_price_to_won:#김프
+    else:#김프
         if abs(UB_CB_Premium - cfg.UB_CB_Premium_pre) > cfg.PREMIUM_GAP:
-            premium = '김프 : ' + str(UB_CB_Premium) +'%'
+            premium = '김프 : ' + str(UB_CB_Premium) + '%'
             price_gap = UB_price_to_won - CB_price_to_won
             print('김프:',UB_CB_Premium,'%,','현재 BTC 금액은 coinbase기준:',CB_price_to_won,'원, upbit기준:',UB_price_to_won,'원, 차이는',UB_price_to_won-CB_price_to_won,'원')
         else:
-            cfg.Premium_calc += UB_CB_Premium - cfg.UB_CB_Premium_pre
-            if abs(cfg.Premium_calc) >= 0.3:
+            cfg.Premium_calc += cfg.UB_CB_Premium_pre - UB_CB_Premium
+            if abs(cfg.Premium_calc) >= 0.01:
+                print(cfg.Premium_calc)
                 premium = '김프 : ' + str(UB_CB_Premium) + '%'
                 price_gap = UB_price_to_won - CB_price_to_won
                 cfg.Premium_calc = 0
+
 
     cfg.CB_UB_Premium_pre = CB_UB_Premium
     cfg.UB_CB_Premium_pre = UB_CB_Premium
