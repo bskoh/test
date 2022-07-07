@@ -1,8 +1,8 @@
 #telegram bot @GoTreadingSender_bot
-TOKEN = '1675347155:AAEmrM6mvwsuDQLpYVpcNfWIo0NCTc4jnuE'
+TOKEN = '167*******:AAEmrM6****************************'
 
 #Coinmarketcap API KEY
-APIKEY = 'ab1be27f-fa54-4b32-85d1-7619ee8755c0'
+APIKEY = 'a*******-f***-4***-8***-7619e*******'
 
 #Premium alarm gap
 PREMIUM_GAP = 0.3
@@ -17,5 +17,5 @@ Dominance_calc = 0
 
 #telegram ID
 class ID:
-    LKJ = '472489889'
-    KBS = '55426710'
+    LKJ = '47*******'
+    KBS = '5*******'
